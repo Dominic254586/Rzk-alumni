@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Riziki Alumni Network</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <style>
+    /* Red and Blue Theme Styling Inline (For Testing or Export) */
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      line-height: 1.8;
+      background: #fdfdfd;
+      color: #2c3e50;
+      margin: 0;
+    }
+
+    header {
+      background: linear-gradient(to right, #0047ab, #d32f2f); /* Blue to Red */
+      color: white;
+      padding: 60px 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 2.8em;
+      margin-bottom: 10px;
+    }
+
+    nav {
+      background-color: #d32f2f;
+      display: flex;
+      justify-content: center;
+      padding: 15px 0;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 20px;
+      font-size: 1.1em;
+      transition: 0.3s;
+    }
+
+    nav a.active,
+    nav a:hover {
+      font-weight: bold;
+      color: #ffc107;
+      text-decoration: underline;
+    }
+
+    main {
+      max-width: 1000px;
+      margin: auto;
+      padding: 40px 20px;
+    }
+
+    .about {
+      background: #f5f7fa;
+      padding: 30px;
+      border-left: 6px solid #d32f2f;
+      margin-bottom: 40px;
+      border-radius: 8px;
+    }
+
+    .about h2 {
+      color: #d32f2f;
+      font-size: 2em;
+      margin-bottom: 15px;
+    }
+
+    .cta {
+      text-align: center;
+      padding: 30px;
+      background: #e3f2fd;
+      border-radius: 12px;
+      margin-bottom: 40px;
+    }
+
+    .cta h2 {
+      color: #0047ab;
+    }
+
+    .cta button {
+      background-color: #d32f2f;
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      margin: 10px;
+      font-size: 1em;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .cta button:hover {
+      background-color: #b71c1c;
+    }
+
+    footer {
+      background-color: #0047ab;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+    }
+
+    ul {
+      padding-left: 20px;
+    }
+
+    ul li {
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 2em;
+      }
+
+      nav {
+        flex-direction: column;
+        padding: 10px;
+      }
+
+      .cta button {
+        width: 90%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <h1>Riziki Alumni Network</h1>
+    <p>United in Memories • Bound by Purpose</p>
+  </header>
+
+  <!-- NAVIGATION -->
+  <nav>
+    <a href="index.html" class="active">Home</a>
+    <a href="profile.html">Profiles</a>
+    <a href="events.html">Events</a>
+    <a href="login.html">Login</a>
+  </nav>
+
+  <!-- MAIN -->
+  <main>
+
+    <!-- ABOUT US -->
+    <section class="about">
+      <h2>About Us</h2>
+      <p>The Riziki Alumni Network is a place for former residents, students, and staff of Riziki Children’s Home to connect, grow, and give back. Whether you were here as a child or have supported the journey of others — you are family.</p>
+      <p>Our platform fosters unity, mentorship, storytelling, and impact. Here, the past meets the future in a beautiful community built on love, sacrifice, and resilience.</p>
+    </section>
+
+    <!-- VALUES -->
+    <section class="about">
+      <h2>Our Core Values</h2>
+      <ul>
+        <li><strong>Love:</strong> We are bonded by care and compassion.</li>
+        <li><strong>Service:</strong> Every alumni contributes in their own way.</li>
+        <li><strong>Gratitude:</strong> We never forget where we came from.</li>
+        <li><strong>Hope:</strong> We light the way for the next generation.</li>
+      </ul>
+    </section>
+
+    <!-- CALL TO ACTION -->
+    <section class="cta">
+      <h2>Be Part of the Family</h2>
+      <p>Join us as we continue the legacy of Riziki. Whether you're here to reconnect, mentor, support, or be supported — welcome home.</p>
+      <button onclick="window.location.href='register.html'">Join the Network</button>
+      <button onclick="window.location.href='login.html'">Login</button>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section class="about">
+      <h2>Alumni Voices</h2>
+      <p><em>“The values I learned at Riziki never left me. Now I give back through this network.”</em> – <strong>Richard K.</strong></p>
+      <p><em>“From the dusty football fields to the chapel prayers... this platform brought it all back.”</em> – <strong>Neema N.</strong></p>
+    </section>
+
+    <!-- LATEST UPDATES -->
+    <section class="about">
+      <h2>Latest Updates</h2>
+      <ul id="updates-list">
+        <li>Loading updates from Supabase...</li>
+      </ul>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>&copy; 2025 Riziki Alumni Network • Built with ❤️ for the Riziki family</p>
+  </footer>
+
+  <!-- SUPABASE SETUP -->
+  <script>
+    const supabase = supabase.createClient(
+      'https://prdjrsmysdbnzvuckaro.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InByZGpyc215c2Ribnp2dWNrYXJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEwOTQyMDUsImV4cCI6MjA2NjY3MDIwNX0.jc3sjaFKwEfJOZajar6ti2-heZzefMhSx7BCZugyc-A'
+    );
+
+    // Load updates from Supabase
+    async function loadUpdates() {
+      const { data, error } = await supabase
+        .from('updates')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      const updatesList = document.getElementById('updates-list');
+      updatesList.innerHTML = '';
+
+      if (error) {
+        updatesList.innerHTML = '<li>Could not load updates.</li>';
+        console.error(error);
+        return;
+      }
+
+      if (data.length === 0) {
+        updatesList.innerHTML = '<li>No updates available at the moment.</li>';
+      } else {
+        data.forEach(update => {
+          const li = document.createElement('li');
+          li.textContent = `${update.title} – ${new Date(update.created_at).toLocaleDateString()}`;
+          updatesList.appendChild(li);
+        });
+      }
+    }
+
+    loadUpdates();
+  </script>
+</body>
+</html>

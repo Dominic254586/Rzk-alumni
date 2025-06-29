@@ -1,0 +1,101 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Submit Tribute - Riziki Alumni</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #fefefe;
+      color: #2c3e50;
+      padding: 40px;
+    }.container {
+  max-width: 600px;
+  margin: auto;
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  border-left: 6px solid #0047ab;
+}
+
+h2 {
+  text-align: center;
+  color: #d32f2f;
+  margin-bottom: 20px;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 14px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1em;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  background: #0047ab;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1em;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+button:hover {
+  background-color: #d32f2f;
+}
+
+.message {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.back {
+  display: block;
+  text-align: center;
+  margin-top: 20px;
+  text-decoration: none;
+  color: #0047ab;
+  font-weight: bold;
+}
+
+.back:hover {
+  text-decoration: underline;
+}
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Submit a Tribute</h2>
+    <form id="tribute-form">
+      <input type="text" id="submitted_by" placeholder="Your name" required />
+      <input type="text" id="name" placeholder="Person you're honoring" required />
+      <textarea id="message" placeholder="Write your tribute here..." rows="6" required></textarea>
+      <button type="submit">Submit Tribute</button>
+    </form>
+    <p class="message" id="responseMsg"></p>
+    <a href="tribute.html" class="back">← Back to Tribute Page</a>
+  </div>  <script>
+    const supabase = supabase.createClient(
+      'https://prdjrsmysdbnzvuckaro.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InByZGpyc215c2Ribnp2dWNrYXJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEwOTQyMDUsImV4cCI6MjA2NjY3MDIwNX0.jc3sjaFKwEfJOZajar6ti2-heZzefMhSx7BCZugyc-A'
+    );
+
+    document.getElementById('tribute-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById('name').value;
+      const message = document.getElementById('message').value;
+      const submitted_by = document.getElementById('submitted_by').value;
+      const responseMsg = document.getElementById('responseMsg');
+
+      const { data, error } = await supabase
+        .from('tributes')
+        .

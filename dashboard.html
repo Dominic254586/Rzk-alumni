@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard - Riziki Alumni</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f9f9f9;
+      padding: 0;
+      margin: 0;
+    }
+    header {
+      background: #d32f2f;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    .container {
+      padding: 30px;
+    }
+    h2 {
+      color: #0047ab;
+    }
+    section {
+      background: white;
+      padding: 20px;
+      margin-bottom: 30px;
+      border-left: 5px solid #0047ab;
+      box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+    }
+    button {
+      padding: 8px 15px;
+      margin-top: 10px;
+      background: #0047ab;
+      color: white;
+      border: none;
+      border-radius: 4px;
+    }
+    button:hover {
+      background: #d32f2f;
+      cursor: pointer;
+    }
+    .log {
+      font-family: monospace;
+      background: #eee;
+      padding: 5px;
+      margin-top: 10px;
+      max-height: 150px;
+      overflow-y: scroll;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Riziki Admin Dashboard</h1>
+  </header>
+
+  <div class="container">
+
+    <section>
+      <h2>📸 Uploaded Alumni Images</h2>
+      <button onclick="viewUploads()">View Images</button>
+      <div id="imageLog" class="log"></div>
+    </section>
+
+    <section>
+      <h2>📝 Manage Submissions</h2>
+      <button onclick="viewSubmissions()">View Tributes, Ideas, Jobs</button>
+      <div id="subLog" class="log"></div>
+    </section>
+
+    <section>
+      <h2>📅 Events & Announcements</h2>
+      <button onclick="viewEvents()">View Events</button>
+      <button onclick="postAnnouncement()">Post Announcement</button>
+      <div id="eventLog" class="log"></div>
+    </section>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script>
+    const supabase = supabase.createClient(
+      'https://prdjrsmysdbnzvuckaro.supabase.co',
+      'YOUR-ANON-KEY-HERE'
+    );
+
+    async function viewUploads() {
+      const { data, error } = await supabase.storage.from('alumni-images').list('', { limit: 100 });
+      const log = document.getElementById('imageLog');
+      if (error) {
+        log.textContent = 'Error fetching uploads.';
+        return;
+      }
+      log.innerHTML = data.map(file => `✅ ${file.name}`).join('<br>');
+    }
+
+    async function viewSubmissions() {
+      const log = document.getElementById('subLog');
+      log.innerHTML = `📝 Sample tributes, jobs, ideas will show here. <br> (This part connects to your database if set up.)`;
+    }
+
+    async function viewEvents() {
+      const log = document.getElementById('eventLog');
+      log.innerHTML = `📅 12 Dec 2025 - RZK Meeting<br>🌱 Tree planting - January 2026<br>(Pull future events from database)`;
+    }
+
+    function postAnnouncement() {
+      const title = prompt('Enter announcement title:');
+      const log = document.getElementById('eventLog');
+      if (title) {
+        log.innerHTML += `<br>📢 New: ${title}`;
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,142 @@
+/* Base Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* General Body Style */
+body {
+  font-family: 'Segoe UI', sans-serif;
+  line-height: 1.8;
+  background: #f5f8ff;
+  color: #222;
+  padding-bottom: 80px;
+}
+
+/* Header */
+header {
+  background: linear-gradient(to right, #0047ab, #d32f2f); /* Blue to red */
+  color: white;
+  padding: 60px 20px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+header h1 {
+  font-size: 2.8em;
+  margin-bottom: 10px;
+}
+
+header p {
+  font-size: 1.2em;
+  letter-spacing: 0.5px;
+}
+
+/* Navigation */
+nav {
+  background: #0047ab;
+  display: flex;
+  justify-content: center;
+  padding: 14px 0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  margin: 0 25px;
+  font-size: 1.1em;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+nav a.active,
+nav a:hover {
+  color: #ff5252;
+  text-decoration: underline;
+}
+
+/* Main Content */
+main {
+  padding: 40px 20px;
+  max-width: 1100px;
+  margin: auto;
+}
+
+/* About Section */
+.about {
+  background: white;
+  padding: 30px;
+  border-left: 5px solid #d32f2f;
+  border-radius: 8px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
+  margin-bottom: 50px;
+}
+
+.about h2 {
+  color: #d32f2f;
+  margin-bottom: 15px;
+  font-size: 2em;
+}
+
+.about p {
+  font-size: 1.1em;
+  color: #444;
+}
+
+/* CTA Buttons */
+.cta {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.cta button {
+  background: #0047ab;
+  color: white;
+  border: none;
+  padding: 15px 32px;
+  font-size: 1em;
+  margin: 10px;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cta button:hover {
+  background: #d32f2f;
+  transform: translateY(-2px);
+}
+
+/* Footer */
+footer {
+  background: #d32f2f;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  font-size: 0.95em;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  header h1 {
+    font-size: 2.2em;
+  }
+
+  nav {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  nav a {
+    margin: 10px 0;
+  }
+
+  .cta button {
+    width: 90%;
+    margin: 10px 0;
+  }
+}

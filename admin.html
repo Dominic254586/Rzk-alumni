@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin - Riziki Alumni</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+    }
+
+    header {
+      background: linear-gradient(to right, #d32f2f, #0047ab);
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 40px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 6px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      color: #0047ab;
+      border-bottom: 2px solid #d32f2f;
+      padding-bottom: 5px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background: #0047ab;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+
+    button:hover {
+      background: #d32f2f;
+    }
+
+    .output {
+      background: #eee;
+      padding: 10px;
+      font-family: monospace;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Admin Panel - Riziki Alumni</h1>
+  </header>
+
+  <div class="container">
+    <h2>📅 Post an Event</h2>
+    <input type="text" id="eventTitle" placeholder="Event Title">
+    <input type="date" id="eventDate">
+    <button onclick="postEvent()">Post Event</button>
+    <div class="output" id="eventLog"></div>
+
+    <h2>🗑️ Delete Uploaded Image</h2>
+    <input type="text" id="imagePath" placeholder="e.g. events/photo.jpg">
+    <button onclick="deleteImage()">Delete Image</button>
+    <div class="output" id="imageStatus"></div>
+  </div>
+
+  <script>
+    const supabase = supabase.createClient(
+      'https://prdjrsmysdbnzvuckaro.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InByZGpyc215c2Ribnp2dWNrYXJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEwOTQyMDUsImV4cCI6MjA2NjY3MDIwNX0.jc3sjaFKwEfJOZajar6ti2-heZzefMhSx7BCZugyc-A'
+    );
+
+    async function postEvent() {
+      const title = document.getElementById('eventTitle').value;
+      const date = document.getElementById('eventDate').value;
+      const log = document.getElementById('eventLog');
+
+      if (!title || !date) {
+        log.textContent = '❌ Please fill in both title and date.';
+        return;
+      }
+
+      const { error } = await supabase.from('events').insert([{ title, date }]);
+      log.textContent = error ? '❌ Failed to post event.' : '✅ Event posted!';
+    }
+
+    async function deleteImage() {
+      const path = document.getElementById('imagePath').value;
+      const result = document.getElementById('imageStatus');
+
+      if (!path) {
+        result.textContent = '❌ Enter an image path.';
+        return;
+      }
+
+      const { error } = await supabase.storage.from('gallery').remove([path]);
+      result.textContent = error ? '❌ Failed to delete image.' : '✅ Image deleted.';
+    }
+  </script>
+</body>
+</html>

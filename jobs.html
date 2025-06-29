@@ -1,0 +1,108 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Job Board - Riziki Alumni</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #fefefe;
+      color: #2c3e50;
+      padding: 20px;
+    }header {
+  background: linear-gradient(to right, #0047ab, #d32f2f);
+  color: white;
+  text-align: center;
+  padding: 50px 20px;
+}
+
+h1 {
+  font-size: 2.5em;
+  margin-bottom: 10px;
+}
+
+.container {
+  max-width: 1000px;
+  margin: auto;
+  padding: 30px 20px;
+}
+
+.job-box {
+  background: #f7f9fc;
+  border-left: 6px solid #0047ab;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+h2 {
+  color: #d32f2f;
+}
+
+h3 {
+  color: #0047ab;
+  margin-bottom: 5px;
+}
+
+.back-link {
+  display: block;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #0047ab;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Job Board</h1>
+    <p>Opportunities shared by Riziki Alumni for the Community</p>
+  </header>  <div class="container">
+    <a href="index.html" class="back-link">← Back to Home</a>
+    <h2>Available Job Vacancies</h2>
+    <div id="job-list"></div>
+  </div>  <script>
+    const supabase = supabase.createClient(
+      'https://prdjrsmysdbnzvuckaro.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InByZGpyc215c2Ribnp2dWNrYXJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEwOTQyMDUsImV4cCI6MjA2NjY3MDIwNX0.jc3sjaFKwEfJOZajar6ti2-heZzefMhSx7BCZugyc-A'
+    );
+
+    async function loadApprovedJobs() {
+      const { data, error } = await supabase
+        .from('jobs')
+        .select('*')
+        .eq('approved', true)
+        .order('created_at', { ascending: false });
+
+      const jobList = document.getElementById('job-list');
+
+      if (error) {
+        jobList.innerHTML = '<p style="color:red;">Failed to load jobs.</p>';
+        return;
+      }
+
+      if (data.length === 0) {
+        jobList.innerHTML = '<p>No approved jobs posted yet.</p>';
+        return;
+      }
+
+      data.forEach(job => {
+        const div = document.createElement('div');
+        div.className = 'job-box';
+        div.innerHTML = `<h3>${job.title}</h3><p>${job.description}</p>`;
+        jobList.appendChild(div);
+      });
+    }
+
+    loadApprovedJobs();
+  </script></body>
+</html>

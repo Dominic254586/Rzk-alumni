@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Register - Riziki Alumni</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <style>
+    body {
+      background: #fefefe;
+      font-family: 'Segoe UI', sans-serif;
+      color: #2c3e50;
+    }
+
+    .register-container {
+      max-width: 450px;
+      margin: 60px auto;
+      background: #ffffff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      border-top: 5px solid #0047ab;
+    }
+
+    h2 {
+      text-align: center;
+      color: #0047ab;
+      margin-bottom: 30px;
+    }
+
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 14px;
+      margin: 12px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1em;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      background: #d32f2f;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1em;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #b71c1c;
+    }
+
+    .message {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 0.95em;
+    }
+
+    .error {
+      color: #d32f2f;
+    }
+
+    .success {
+      color: green;
+    }
+
+    .back {
+      margin-top: 20px;
+      display: block;
+      text-align: center;
+      text-decoration: none;
+      color: #0047ab;
+      font-weight: bold;
+    }
+
+    .back:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="register-container">
+    <h2>Join Riziki Alumni</h2>
+    <form id="register-form">
+      <input type="email" id="email" placeholder="Email address" required />
+      <input type="password" id="password" placeholder="Create password" required />
+      <button type="submit">Register</button>
+    </form>
+    <p class="message" id="message"></p>
+    <a href="login.html" class="back">← Already have an account? Login</a>
+  </div>
+
+  <script>
+    const supabase = supabase.createClient(
+      'https://prdjrsmysdbnzvuckaro.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InByZGpyc215c2Ribnp2dWNrYXJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEwOTQyMDUsImV4cCI6MjA2NjY3MDIwNX0.jc3sjaFKwEfJOZajar6ti2-heZzefMhSx7BCZugyc-A'
+    );
+
+    const form = document.getElementById('register-form');
+    const message = document.getElementById('message');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      const { data, error } = await supabase.auth.signUp({
+        email: email,
+        password: password
+      });
+
+      if (error) {
+        message.textContent = "Registration failed: " + error.message;
+        message.className = "message error";
+      } else {
+        message.textContent = "Success! Check your email to confirm your account.";
+        message.className = "message success";
+
+        // Optionally redirect after a few seconds
+        // setTimeout(() => window.location.href = 'login.html', 3000);
+      }
+    });
+  </script>
+</body>
+</html>

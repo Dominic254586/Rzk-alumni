@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Photo Gallery by Album - Riziki Alumni</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background: #f4f4f4;
+    }
+
+    header {
+      background: linear-gradient(to right, #0047ab, #d32f2f);
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 30px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      color: #0047ab;
+    }
+
+    select, input[type="file"], button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background: #0047ab;
+      color: white;
+      border: none;
+    }
+
+    button:hover {
+      background: #d32f2f;
+    }
+
+    .gallery {
+      margin-top: 30px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .gallery img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 10px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+
+    .status {
+      font-style: italic;
+      color: #444;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>📁 Riziki Alumni Photo Albums</h1>
+  </header>
+
+  <div class="container">
+    <h2>Upload a Photo to an Album</h2>
+
+    <label for="albumSelect">Select Album:</label>
+    <select id="albumSelect">
+      <option value="school-life">🏫 School Life</option>
+      <option value="events">🎉 Events</option>
+      <option value="football">⚽ Football</option>
+      <option value="tree-planting">🌱 Tree Planting</option>
+      <option value="memories">📸 Random Memories</option>
+    </select>
+
+    <input type="file" id="photoInput" accept="image/*">
+    <button onclick="uploadPhoto()">Upload</button>
+    <div class="status" id="status"></div>
+
+    <h2>Browse Album</h2>
+    <select id="viewAlbum" onchange="loadPhotos()">
+      <option value="school-life">🏫 School Life</option>
+      <option value="events">🎉 Events</option>
+      <option value="football">⚽ Football</option>
+      <option value="tree-planting">🌱 Tree Planting</option>
+      <option value="memories">📸 Random Memories</option>
+    </select>
+
+    <div class="gallery" id="photoGallery"></div>
+  </div>
+
+  <script>
+    const supabase = supabase.createClient(
+      'https://prdjrsmysdbnzvuckaro.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InByZGpyc215c2Ribnp2dWNrYXJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEwOTQyMDUsImV4cCI6MjA2NjY3MDIwNX0.jc3sjaFKwEfJOZajar6ti2-heZzefMhSx7BCZugyc-A'
+    );
+
+    async function uploadPhoto() {
+      const fileInput = document.getElementById('photoInput');
+      const album = document.getElementById('albumSelect').value;
+      const status = document.getElementById('status');
+
+      if (!fileInput.files.length) {
+        status.textContent = "❌ Please select a photo.";
+        return;
+      }
+
+      const file = fileInput.files[0];
+      const filePath = `${album}/${Date.now()}_${file.name}`;
+
+      const { error } = await supabase.storage
+        .from('gallery')
+        .upload(filePath, file);
+
+      if (error) {
+        status.textContent = "❌ Upload failed.";
+      } else {
+        status.textContent = "✅ Photo uploaded!";
+        fileInput.value = "";
+        loadPhotos(); // refresh current album
+      }
+    }
+
+    async function loadPhotos() {
+      const gallery = document.getElementById('photoGallery');
+      const album = document.getElementById('viewAlbum').value;
+      gallery.innerHTML = "Loading...";
+
+      const { data, error } = await supabase.storage
+        .from('gallery')
+        .list(album, { limit: 100 });
+
+      if (error || !data) {
+        gallery.innerHTML = "❌ Could not load photos.";
+        return;
+      }
+
+      const imageElements = await Promise.all(data.map(async (item) => {
+        const { data: urlData } = await supabase.storage
+          .from('gallery')
+          .getPublicUrl(`${album}/${item.name}`);
+
+        return `<img src="${urlData.publicUrl}" alt="${item.name}">`;
+      }));
+
+      gallery.innerHTML = imageElements.join("");
+    }
+
+    // Load default album on page load
+    loadPhotos();
+  </script>
+</body>
+</html>

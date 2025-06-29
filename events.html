@@ -1,0 +1,193 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Events - Riziki Alumni</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #fefefe;
+      color: #2c3e50;
+      padding: 20px;
+    }header {
+  background: linear-gradient(to right, #0047ab, #d32f2f);
+  color: white;
+  text-align: center;
+  padding: 50px 20px;
+}
+
+h1 {
+  font-size: 2.5em;
+  margin-bottom: 10px;
+}
+
+.container {
+  max-width: 1000px;
+  margin: auto;
+  padding: 30px 20px;
+}
+
+.event, .idea {
+  background: #f7f9fc;
+  border-left: 6px solid #0047ab;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.event h3, .idea h3 {
+  margin: 0;
+  color: #d32f2f;
+}
+
+.event p, .idea p {
+  margin-top: 5px;
+  line-height: 1.6;
+}
+
+form {
+  margin-top: 40px;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+input, textarea, button {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1em;
+}
+
+button {
+  background-color: #0047ab;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #d32f2f;
+}
+
+.back-link {
+  display: block;
+  text-align: center;
+  margin-top: 20px;
+  color: #0047ab;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Riziki Alumni Events</h1>
+    <p>Stay informed. Participate. Build the future together.</p>
+  </header>  <div class="container">
+    <a href="index.html" class="back-link">← Back to Home</a><section>
+  <h2>Upcoming Events</h2>
+
+  <div class="event">
+    <h3>General Alumni Meeting</h3>
+    <p><strong>Date:</strong> 12th December 2025</p>
+    <p><strong>Venue:</strong> Riziki Grounds</p>
+    <p>This annual meeting brings together all alumni to reconnect, plan future goals, and support one another. All are welcome!</p>
+  </div>
+
+  <div class="event">
+    <h3>Tree Planting Initiative</h3>
+    <p><strong>Date:</strong> 20th January 2026</p>
+    <p><strong>Venue:</strong> Kiamunyi Hill, Nakuru</p>
+    <p>Join us as we plant 500 trees in honor of our mentors and loved ones. Let’s grow a greener legacy.</p>
+  </div>
+</section>
+
+<section>
+  <h2>Community Ideas & Proposals</h2>
+  <div id="ideas-list">
+    <div class="idea">
+      <h3>Neema</h3>
+      <p>“What if we start a mentorship program for the current Riziki kids? Each alum can volunteer a day each month.”</p>
+    </div>
+
+    <div class="idea">
+      <h3>Dominic</h3>
+      <p>“Let’s build a digital archive of our time at Riziki — stories, poems, pictures. It will inspire future generations.”</p>
+    </div>
+  </div>
+
+  <form id="idea-form">
+    <h3>Share Your Idea</h3>
+    <input type="text" id="author" placeholder="Your Name" required />
+    <textarea id="idea" placeholder="Your event idea or proposal..." rows="5" required></textarea>
+    <button type="submit">Submit Idea</button>
+    <p id="idea-response"></p>
+  </form>
+</section>
+
+  </div>  <script>
+    const supabase = supabase.createClient(
+      'https://prdjrsmysdbnzvuckaro.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InByZGpyc215c2Ribnp2dWNrYXJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEwOTQyMDUsImV4cCI6MjA2NjY3MDIwNX0.jc3sjaFKwEfJOZajar6ti2-heZzefMhSx7BCZugyc-A'
+    );
+
+    async function fetchIdeas() {
+      const { data, error } = await supabase
+        .from('ideas')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      const container = document.getElementById('ideas-list');
+
+      if (error) {
+        console.error('Error fetching ideas:', error);
+        return;
+      }
+
+      data.forEach(idea => {
+        const div = document.createElement('div');
+        div.className = 'idea';
+        div.innerHTML = `
+          <h3>${idea.author}</h3>
+          <p>${idea.message}</p>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    fetchIdeas();
+
+    document.getElementById('idea-form').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const author = document.getElementById('author').value;
+      const message = document.getElementById('idea').value;
+      const response = document.getElementById('idea-response');
+
+      const { data, error } = await supabase
+        .from('ideas')
+        .insert([{ author, message }]);
+
+      if (error) {
+        response.style.color = 'red';
+        response.textContent = 'Error submitting idea. Please try again.';
+      } else {
+        response.style.color = 'green';
+        response.textContent = 'Thank you! Your idea has been recorded.';
+        document.getElementById('idea-form').reset();
+        fetchIdeas();
+      }
+    });
+  </script></body>
+</html>
